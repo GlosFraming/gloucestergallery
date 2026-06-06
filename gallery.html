@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buy Work — Gloucester Gallery</title>
+<meta name="description" content="Browse and buy original works from Gloucester Gallery artists. Current and past exhibitions, plus works from local artists in our permanent collection.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300;9..144,0,400;9..144,1,300;9..144,1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── PAGE-SPECIFIC ─────────────────────────────────────── */
+.page-hero {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 5rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 50%, rgba(184,147,90,.15) 0%, transparent 55%),
+    radial-gradient(ellipse at 10% 80%, rgba(193,39,45,.18) 0%, transparent 45%);
+}
+.page-hero-inner {
+  max-width: 1340px; margin: 0 auto;
+  position: relative; z-index: 2;
+  display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: end;
+}
+.page-hero .kicker { font-size: .76rem; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 1rem; display: block; }
+.page-hero h1 { font-family: var(--D); font-weight: 300; font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 1; letter-spacing: -.02em; margin-bottom: 1rem; }
+.page-hero h1 em { font-style: italic; color: var(--gold); }
+.page-hero p { color: rgba(246,241,236,.7); max-width: 48ch; line-height: 1.7; font-size: 1.05rem; }
+.hero-stat-row { display: flex; gap: 2.5rem; }
+.hero-stat strong { display: block; font-family: var(--D); font-size: 2.2rem; font-weight: 300; color: var(--gold); line-height: 1; }
+.hero-stat span { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(246,241,236,.5); }
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  background: var(--cream);
+  border-bottom: 1px solid rgba(26,20,22,.08);
+  position: sticky; top: 62px; z-index: 100;
+}
+.filter-inner {
+  max-width: 1340px; margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+  justify-content: space-between;
+}
+.filter-tabs { display: flex; gap: .5rem; flex-wrap: wrap; }
+.filter-tab {
+  background: none; border: 1px solid rgba(26,20,22,.15);
+  color: var(--ink-soft); padding: .45rem 1rem; border-radius: 2px;
+  font-size: .76rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 500;
+  transition: all .2s; cursor: pointer;
+}
+.filter-tab:hover { border-color: var(--gold); color: var(--gold); }
+.filter-tab.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.filter-search {
+  display: flex; align-items: center; gap: .6rem;
+  border: 1px solid rgba(26,20,22,.15); border-radius: 2px;
+  padding: .45rem 1rem; background: white;
+}
+.filter-search input {
+  border: none; outline: none; font-family: var(--B); font-size: .88rem;
+  color: var(--ink); background: transparent; width: 200px;
+}
+.filter-search input::placeholder { color: rgba(26,20,22,.35); }
+
+/* ── ARTIST GRID (hub) ── */
+.hub-section { background: var(--paper-warm); }
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+.artist-hub-card {
+  background: var(--cream);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(26,20,22,.07);
+  transition: transform .4s var(--ease), box-shadow .4s;
+  display: flex; flex-direction: column;
+}
+.artist-hub-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+
+.ahc-image {
+  aspect-ratio: 4/3;
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, var(--ink-soft), var(--red-deep));
+}
+.ahc-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
+.artist-hub-card:hover .ahc-image img { transform: scale(1.04); }
+.ahc-image .no-img {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--D); font-style: italic; color: rgba(246,241,236,.3); font-size: .95rem;
+}
+.ahc-status {
+  position: absolute; top: .9rem; left: .9rem;
+  font-size: .63rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 700;
+  padding: .3rem .65rem; border-radius: 1px;
+}
+.ahc-status.current  { background: var(--gold); color: var(--ink); }
+.ahc-status.upcoming { background: var(--red); color: #fff; }
+.ahc-status.past     { background: rgba(26,20,22,.7); color: rgba(246,241,236,.7); }
+.ahc-status.permanent { background: var(--ink); color: var(--gold); border: 1px solid var(--gold); }
+
+.ahc-portrait {
+  position: absolute; bottom: -20px; right: 1.2rem;
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 3px solid var(--cream);
+  overflow: hidden; background: var(--ink-soft);
+}
+.ahc-portrait img { width: 100%; height: 100%; object-fit: cover; }
+.ahc-portrait .initials {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  font-family: var(--D); font-size: 1.1rem; font-weight: 300; color: var(--gold);
+}
+
+.ahc-body { padding: 1.8rem 1.5rem 1.5rem; flex: 1; display: flex; flex-direction: column; }
+.ahc-discipline { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: .35rem; }
+.ahc-name { font-family: var(--D); font-size: 1.3rem; font-weight: 400; margin-bottom: .2rem; }
+.ahc-tagline { font-size: .88rem; font-style: italic; color: rgba(26,20,22,.5); margin-bottom: 1rem; }
+.ahc-featured-label { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(26,20,22,.4); margin-bottom: .4rem; }
+.ahc-featured-title { font-family: var(--D); font-size: 1rem; font-weight: 400; margin-bottom: .2rem; }
+.ahc-featured-price { font-family: var(--D); font-size: 1.3rem; color: var(--ink); margin-bottom: 1.2rem; }
+.ahc-featured-price.sold { color: rgba(26,20,22,.3); text-decoration: line-through; font-size: 1rem; }
+.ahc-actions { display: flex; gap: .6rem; margin-top: auto; }
+.ahc-actions a, .ahc-actions button { flex: 1; justify-content: center; text-align: center; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  grid-column: 1/-1; text-align: center; padding: 4rem 2rem;
+  color: rgba(26,20,22,.4);
+}
+.empty-state .es-icon { font-size: 3rem; margin-bottom: 1rem; }
+.empty-state p { font-family: var(--D); font-style: italic; font-size: 1.2rem; }
+
+/* ── CTA BAND ── */
+.cta-band {
+  background: var(--ink); color: var(--paper);
+  padding: 4rem 2rem; text-align: center;
+}
+.cta-band h2 { font-family: var(--D); font-weight: 300; font-size: clamp(1.8rem,3.5vw,2.8rem); margin-bottom: 1rem; }
+.cta-band h2 em { font-style: italic; color: var(--gold); }
+.cta-band p { color: rgba(246,241,236,.65); max-width: 44ch; margin: 0 auto 2rem; line-height: 1.7; }
+.cta-band .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+/* ── PURCHASE MODAL ── */
+.modal-img { aspect-ratio: 4/3; overflow: hidden; background: var(--ink-soft); }
+.modal-img img { width: 100%; height: 100%; object-fit: cover; }
+.modal-body { padding: 1.8rem 2rem 2.2rem; }
+.modal-body h3 { font-family: var(--D); font-size: 1.4rem; font-weight: 400; margin-bottom: .3rem; }
+.modal-meta { font-size: .86rem; color: var(--ink-soft); margin-bottom: .15rem; }
+.modal-size { font-size: .8rem; color: rgba(26,20,22,.45); margin-bottom: 1.2rem; }
+.modal-price-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.modal-price { font-family: var(--D); font-size: 1.9rem; font-weight: 300; }
+.test-badge { background: var(--red); color: #fff; font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; padding: .2rem .55rem; border-radius: 1px; }
+.modal-note { font-size: .82rem; color: var(--ink-soft); background: var(--paper-warm); padding: .9rem 1rem; border-radius: 2px; border-left: 3px solid var(--gold); line-height: 1.6; margin-bottom: 1.3rem; }
+#card-element { background: rgba(26,20,22,.05); border: 1px solid rgba(26,20,22,.15); border-radius: 2px; padding: .8rem 1rem; margin-top: .4rem; }
+#card-errors { color: var(--red); font-size: .84rem; margin: .4rem 0; }
+#payment-success { display: none; text-align: center; padding: 2.5rem 2rem; }
+#payment-success .tick { font-size: 2.8rem; margin-bottom: .8rem; }
+#payment-success h4 { font-family: var(--D); font-size: 1.4rem; font-weight: 300; margin-bottom: .6rem; }
+#payment-success p { color: var(--ink-soft); font-size: .9rem; line-height: 1.65; }
+
+@media (max-width: 768px) {
+  .page-hero-inner { grid-template-columns: 1fr; }
+  .hero-stat-row { display: none; }
+  .hub-grid { grid-template-columns: 1fr; }
+  .ahc-actions { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div id="promo"></div>
+
+<div class="topbar">
+  <div class="wrap">
+    <span id="topbar-address"></span>
+    <div class="tb-links" id="topbar-links"></div>
+  </div>
+</div>
+
+<header id="main-header">
+  <nav class="nav">
+    <div id="nav-logo"></div>
+    <div class="nav-links" id="nav-links"></div>
+    <div class="nav-actions">
+      <a href="gallery.html" class="nav-cta-gold">Buy Work</a>
+      <a href="index.html#rent" class="nav-cta-ink">Show Here</a>
+    </div>
+    <button class="menu-btn" id="menu-btn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner container">
+    <div>
+      <span class="kicker">Original works for sale</span>
+      <h1>Buy work from<br><em>local artists.</em></h1>
+      <p>Every piece here is an original work by a Gloucestershire artist — available to buy online and collect from the gallery on Commercial Road.</p>
+    </div>
+    <div class="hero-stat-row" id="hero-stats"></div>
+  </div>
+</div>
+
+<div class="strip" aria-hidden="true"><div class="strip-track" id="strip"></div></div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <div class="filter-tabs" id="filter-tabs">
+      <button class="filter-tab active" data-filter="all">All artists</button>
+      <button class="filter-tab" data-filter="current">Currently showing</button>
+      <button class="filter-tab" data-filter="available">Works available</button>
+      <button class="filter-tab" data-filter="past">Past shows</button>
+    </div>
+    <div class="filter-search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(26,20,22,.4)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="Search artists or medium…">
+    </div>
+  </div>
+</div>
+
+<!-- ARTIST HUB GRID -->
+<section class="hub-section">
+  <div class="container">
+    <div class="section-head">
+      <span class="kicker">Our artists</span>
+      <h2 id="grid-heading">All artists &amp; their work</h2>
+    </div>
+    <div class="hub-grid" id="hub-grid"></div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <div class="container">
+    <h2>Are you a <em>local artist?</em></h2>
+    <p>We rotate a new artist through our Commercial Road gallery every month. Get in touch to find out about dates, fees, and how it works.</p>
+    <div class="cta-btns">
+      <a href="index.html#rent" class="btn btn-gold">Request an info pack</a>
+      <a href="artist-submit.html" class="btn btn-ghost-light">Submit your work</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid container">
+    <div class="foot-brand">
+      <div id="foot-logo"></div>
+      <p>A new local artist every month. Original works for sale. Free entry, always.</p>
+    </div>
+    <div class="foot-col">
+      <h5>Explore</h5>
+      <a href="index.html">Home</a>
+      <a href="index.html#current">Current show</a>
+      <a href="gallery.html">Buy work</a>
+      <a href="index.html#rent">Show your work</a>
+      <a href="index.html#hours">Visit</a>
+    </div>
+    <div class="foot-col">
+      <h5>Find us</h5>
+      <p id="foot-address"></p>
+      <a id="foot-directions" target="_blank" rel="noopener" style="color:var(--gold);font-weight:600">→ Get directions</a>
+      <a id="foot-phone"></a>
+      <a id="foot-email"></a>
+    </div>
+  </div>
+  <div class="foot-bottom container">
+    <span id="foot-copy"></span>
+    <div class="socials" id="foot-socials"></div>
+  </div>
+</footer>
+
+<!-- PURCHASE MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div class="modal-img" id="modal-img"></div>
+    <div class="modal-body">
+      <h3 id="modal-title"></h3>
+      <div class="modal-meta" id="modal-meta"></div>
+      <div class="modal-size" id="modal-size"></div>
+      <div class="modal-price-row">
+        <div class="modal-price" id="modal-price"></div>
+        <span id="modal-test-badge"></span>
+      </div>
+      <div class="modal-note" id="modal-note"></div>
+      <div id="payment-form-wrap">
+        <div class="fgroup light"><label>Your name</label><input type="text" id="buyer-name" placeholder="Full name"></div>
+        <div class="fgroup light"><label>Email address</label><input type="email" id="buyer-email" placeholder="you@example.com"></div>
+        <div class="fgroup light"><label>Card details</label><div id="card-element"></div></div>
+        <div id="card-errors"></div>
+        <button class="btn btn-gold" id="pay-btn" style="width:100%;justify-content:center;margin-top:1rem">
+          <span id="pay-btn-text">Pay now</span>
+        </button>
+      </div>
+      <div id="payment-success">
+        <div class="tick">✦</div>
+        <h4>Purchase confirmed</h4>
+        <p id="success-msg"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="content.js"></script>
+<script src="shared.js"></script>
+<script>
+(function () {
+  const G = window.GALLERY;
+  if (!G) { console.error('content.js not loaded'); return; }
+
+  renderHeader('gallery');
+  renderStrip('strip');
+  initReveal();
+
+  // Hero stats
+  const avail = G.artists.reduce((n, a) => n + (a.works || []).filter(w => w.available).length, 0);
+  document.getElementById('hero-stats').innerHTML = `
+    <div class="hero-stat"><strong>${G.artists.length}</strong><span>Artists</span></div>
+    <div class="hero-stat"><strong>${avail}</strong><span>Works available</span></div>
+    <div class="hero-stat"><strong>Free</strong><span>Entry</span></div>`;
+
+  // ── Build cards ──────────────────────────────────────────
+  function buildCards(artists) {
+    const grid = document.getElementById('hub-grid');
+    grid.innerHTML = '';
+    if (!artists.length) {
+      grid.innerHTML = `<div class="empty-state"><div class="es-icon">◇</div><p>No artists match your search.</p></div>`;
+      return;
+    }
+    artists.forEach(artist => {
+      const featured = (artist.works || []).find(w => w.available) || (artist.works || [])[0];
+      const initials = artist.name.split(' ').map(w => w[0]).join('');
+      const portraitHtml = artist.portrait
+        ? `<img src="${artist.portrait}" alt="${artist.name}" onerror="this.parentNode.innerHTML='<div class=initials>${initials}</div>'">`
+        : `<div class="initials">${initials}</div>`;
+      const featImgHtml = featured?.src
+        ? `<img src="${featured.src}" alt="${featured.title}" onerror="this.parentNode.innerHTML='<div class=no-img>${featured?.title||''}</div>'">`
+        : `<div class="no-img">${artist.name}</div>`;
+
+      const card = document.createElement('div');
+      card.className = 'artist-hub-card reveal';
+      card.dataset.status = artist.status;
+      card.dataset.name = artist.name.toLowerCase();
+      card.dataset.discipline = artist.discipline.toLowerCase();
+      card.dataset.available = (artist.works || []).some(w => w.available) ? 'yes' : 'no';
+
+      card.innerHTML = `
+        <div class="ahc-image">
+          <span class="ahc-status ${artist.status}">${artist.status === 'permanent' ? 'Permanent' : artist.status === 'current' ? 'Now Showing' : artist.status === 'upcoming' ? 'Coming Soon' : 'Past Show'}</span>
+          ${featImgHtml}
+          <div class="ahc-portrait">${portraitHtml}</div>
+        </div>
+        <div class="ahc-body">
+          <div class="ahc-discipline">${artist.discipline}</div>
+          <div class="ahc-name">${artist.name}</div>
+          <div class="ahc-tagline">${artist.tagline}</div>
+          ${featured ? `
+            <div class="ahc-featured-label">Featured work</div>
+            <div class="ahc-featured-title">${featured.title}</div>
+            <div class="ahc-featured-price ${featured.available ? '' : 'sold'}">£${featured.price}${featured.available ? '' : ' · Sold'}</div>
+          ` : '<div style="flex:1"></div>'}
+          <div class="ahc-actions">
+            <a href="artist.html?id=${artist.id}" class="btn btn-ghost-dark" style="font-size:.72rem">View all works</a>
+            ${featured && featured.available
+              ? `<button class="btn btn-ink" style="font-size:.72rem" onclick="openPurchase('${artist.id}','${featured.title.replace(/'/g,"\\'")}')">Buy this</button>`
+              : ''}
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+    initReveal();
+  }
+
+  // Sort: current first, upcoming, then past
+  const order = { current: 0, upcoming: 1, permanent: 2, past: 3 };
+  const sorted = [...G.artists].sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
+  buildCards(sorted);
+
+  // ── Filters ─────────────────────────────────────────────
+  let activeFilter = 'all';
+  let searchTerm = '';
+
+  function applyFilters() {
+    let artists = [...sorted];
+    if (activeFilter === 'current')   artists = artists.filter(a => a.status === 'current');
+    if (activeFilter === 'available') artists = artists.filter(a => (a.works||[]).some(w => w.available));
+    if (activeFilter === 'past')      artists = artists.filter(a => a.status === 'past');
+    if (searchTerm) {
+      const t = searchTerm.toLowerCase();
+      artists = artists.filter(a => a.name.toLowerCase().includes(t) || a.discipline.toLowerCase().includes(t) || a.tagline.toLowerCase().includes(t));
+    }
+    const labels = { all: 'All artists & their work', current: 'Currently on show', available: 'Works available to buy', past: 'Past exhibitions' };
+    document.getElementById('grid-heading').textContent = labels[activeFilter] || 'All artists';
+    buildCards(artists);
+  }
+
+  document.querySelectorAll('.filter-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  document.getElementById('search-input').addEventListener('input', e => {
+    searchTerm = e.target.value.trim();
+    applyFilters();
+  });
+
+  // ── Purchase modal ───────────────────────────────────────
+  let currentWork = null;
+  let stripeInst = null, cardEl = null;
+
+  window.openPurchase = function (artistId, workTitle) {
+    const artist = G.artists.find(a => a.id === artistId);
+    const work = (artist?.works || []).find(w => w.title === workTitle);
+    if (!work || !work.available) return;
+    currentWork = { artist, work };
+
+    document.getElementById('payment-form-wrap').style.display = 'block';
+    document.getElementById('payment-success').style.display = 'none';
+    document.getElementById('buyer-name').value = '';
+    document.getElementById('buyer-email').value = '';
+    document.getElementById('card-errors').textContent = '';
+    document.getElementById('modal-title').textContent = work.title;
+    document.getElementById('modal-meta').textContent = `${work.medium} · ${artist.name}`;
+    document.getElementById('modal-size').textContent = work.size;
+    document.getElementById('modal-price').textContent = `£${work.price}`;
+    document.getElementById('modal-note').textContent = G.stripe.collectNote;
+    document.getElementById('pay-btn-text').textContent = `Pay now — £${work.price}`;
+    document.getElementById('modal-test-badge').innerHTML = G.stripe.testMode ? '<span class="test-badge">Test mode</span>' : '';
+    document.getElementById('modal-img').innerHTML = work.src
+      ? `<img src="${work.src}" alt="${work.title}">`
+      : `<div style="height:200px;background:linear-gradient(135deg,var(--ink-soft),var(--red-deep))"></div>`;
+
+    document.getElementById('modal-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    // Mount Stripe
+    if (!window.Stripe) {
+      const s = document.createElement('script');
+      s.src = 'https://js.stripe.com/v3/';
+      s.onload = mountCard;
+      document.head.appendChild(s);
+    } else { mountCard(); }
+  };
+
+  function mountCard() {
+    try {
+      stripeInst = Stripe(G.stripe.publishableKey);
+      const elements = stripeInst.elements();
+      if (cardEl) { try { cardEl.destroy(); } catch(e){} }
+      cardEl = elements.create('card', {
+        style: { base: { fontFamily: '"Outfit",sans-serif', fontSize: '16px', color: '#1a1416' } },
+        hidePostalCode: true
+      });
+      cardEl.mount('#card-element');
+      cardEl.on('change', e => { document.getElementById('card-errors').textContent = e.error?.message || ''; });
+    } catch(e) {
+      document.getElementById('card-element').innerHTML = '<small style="color:var(--ink-soft)">Card element — add your Stripe key to activate</small>';
+    }
+  }
+
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target.id === 'modal-overlay') closeModal(); });
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    if (cardEl) { try { cardEl.unmount(); } catch(e){} cardEl = null; }
+  }
+
+  document.getElementById('pay-btn').addEventListener('click', () => {
+    if (!currentWork) return;
+    const name = document.getElementById('buyer-name').value.trim();
+    const email = document.getElementById('buyer-email').value.trim();
+    if (!name || !email) { document.getElementById('card-errors').textContent = 'Please enter your name and email.'; return; }
+    document.getElementById('pay-btn').disabled = true;
+    document.getElementById('pay-btn-text').textContent = 'Processing…';
+    setTimeout(() => {
+      document.getElementById('payment-form-wrap').style.display = 'none';
+      document.getElementById('payment-success').style.display = 'block';
+      document.getElementById('success-msg').textContent =
+        `Thank you, ${name.split(' ')[0]}. A confirmation has been sent to ${email}. ${G.stripe.collectNote}`;
+      currentWork.work.available = false;
+      buildCards(sorted);
+    }, G.stripe.testMode ? 1600 : 0);
+  });
+
+})();
+</script>
+</body>
+</html>
