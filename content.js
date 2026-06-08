@@ -115,18 +115,18 @@ window.GALLERY = {
       name: "Sarah Meredith",
       month: "June 2026",
       discipline: "Watercolour",
-      portrait: "Images/artist-sarah.jpg",
+      portrait: "images/artist-sarah.jpg",
       tagline: "Quiet light on familiar water",
       bio: "Sarah Meredith has painted the rivers and flood plains of the Severn Vale for fifteen years. Her watercolours are quiet, luminous things — full of the particular grey-gold light of the West Country. She lives and works in Minsterworth.",
       launchDate: "Friday 6 June, 6:30 – 9:00pm",
       launchNote: "Free entry. Wine provided. All welcome.",
       works: [
-        { title: "Morning Mist, Westgate Bridge", medium: "Watercolour on paper", size: "42 × 59 cm", price: 380, available: true,  src: "Images/sarah-1.jpg" },
-        { title: "Flood Plain, January",          medium: "Watercolour on paper", size: "30 × 40 cm", price: 260, available: false, src: "Images/sarah-2.jpg" },
-        { title: "The Severn at Minsterworth",    medium: "Watercolour on paper", size: "50 × 70 cm", price: 520, available: true,  src: "Images/sarah-3.jpg" },
-        { title: "Low Tide",                      medium: "Watercolour on paper", size: "21 × 29 cm", price: 145, available: true,  src: "Images/sarah-4.webp" },
-        { title: "Ley Lines",                     medium: "Watercolour on paper", size: "42 × 59 cm", price: 395, available: true,  src: "Images/sarah-5.jpg" },
-        { title: "Autumn Estuary",                medium: "Watercolour on paper", size: "30 × 40 cm", price: 280, available: true,  src: "Images/sarah-6.webp" },
+        { title: "Morning Mist, Westgate Bridge", medium: "Watercolour on paper", size: "42 × 59 cm", price: 380, available: true,  src: "images/sarah-1.jpg" },
+        { title: "Flood Plain, January",          medium: "Watercolour on paper", size: "30 × 40 cm", price: 260, available: false, src: "images/sarah-2.jpg" },
+        { title: "The Severn at Minsterworth",    medium: "Watercolour on paper", size: "50 × 70 cm", price: 520, available: true,  src: "images/sarah-3.jpg" },
+        { title: "Low Tide",                      medium: "Watercolour on paper", size: "21 × 29 cm", price: 145, available: true,  src: "images/sarah-4.webp" },
+        { title: "Ley Lines",                     medium: "Watercolour on paper", size: "42 × 59 cm", price: 395, available: true,  src: "images/sarah-5.jpg" },
+        { title: "Autumn Estuary",                medium: "Watercolour on paper", size: "30 × 40 cm", price: 280, available: true,  src: "images/sarah-6.webp" },
       ]
     },
 
@@ -136,15 +136,15 @@ window.GALLERY = {
       name: "James Okafor",
       month: "July 2026",
       discipline: "Oil on Canvas",
-      portrait: "Images/artist-james.jpg",
+      portrait: "images/artist-james.jpg",
       tagline: "Gloucester in bold colour",
       bio: "James Okafor paints Gloucester's streets, markets and faces with an expressionist boldness that stops people in their tracks. His oils are built up in thick impasto — colour and texture as much as image. James is based in the Barton Street area of the city.",
       launchDate: "",
       launchNote: "",
       works: [
-        { title: "Eastgate Market, Saturday",  medium: "Oil on canvas", size: "60 × 80 cm", price: 750, available: true, src: "Images/james-1.jpg" },
-        { title: "Barton Street Portrait I",   medium: "Oil on canvas", size: "50 × 60 cm", price: 620, available: true, src: "Images/james-2.jpg" },
-        { title: "Cathedral, Late Afternoon",  medium: "Oil on canvas", size: "70 × 90 cm", price: 980, available: true, src: "Images/james-3.jpg" },
+        { title: "Eastgate Market, Saturday",  medium: "Oil on canvas", size: "60 × 80 cm", price: 750, available: true, src: "images/james-1.jpg" },
+        { title: "Barton Street Portrait I",   medium: "Oil on canvas", size: "50 × 60 cm", price: 620, available: true, src: "images/james-2.jpg" },
+        { title: "Cathedral, Late Afternoon",  medium: "Oil on canvas", size: "70 × 90 cm", price: 980, available: true, src: "images/james-3.jpg" },
       ]
     },
 
@@ -154,15 +154,15 @@ window.GALLERY = {
       name: "Nina Fletcher",
       month: "May 2026",
       discipline: "Photography",
-      portrait: "Images/artist-nina.jpg",
+      portrait: "images/artist-nina.jpg",
       tagline: "Gloucester through a different lens",
       bio: "Nina Fletcher's documentary photography finds the poetic in the everyday. Her May exhibition, 'Ordinary Days', focused entirely on the city's lesser-known corners.",
       launchDate: "Friday 2 May, 6:30 – 9:00pm",
       launchNote: "Free entry. All welcome.",
       works: [
-        { title: "Commercial Road, 6am",     medium: "Archival pigment print", size: "40 × 60 cm", price: 195, available: false, src: "Images/nina-1.jpg" },
-        { title: "The Docks in Fog",         medium: "Archival pigment print", size: "60 × 90 cm", price: 320, available: false, src: "Images/nina-2.jpg" },
-        { title: "Westgate Street, Sunday",  medium: "Archival pigment print", size: "40 × 60 cm", price: 195, available: true,  src: "Images/nina-3.jpg" },
+        { title: "Commercial Road, 6am",     medium: "Archival pigment print", size: "40 × 60 cm", price: 195, available: false, src: "images/nina-1.jpg" },
+        { title: "The Docks in Fog",         medium: "Archival pigment print", size: "60 × 90 cm", price: 320, available: false, src: "images/nina-2.jpg" },
+        { title: "Westgate Street, Sunday",  medium: "Archival pigment print", size: "40 × 60 cm", price: 195, available: true,  src: "images/nina-3.jpg" },
       ]
     }
 

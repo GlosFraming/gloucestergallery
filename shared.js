@@ -46,7 +46,7 @@ function renderHeader(activePage) {
     { href: 'index.html#current', label: 'Current Show', key: 'current' },
     { href: 'gallery.html', label: 'Buy Work',     key: 'gallery' },
     { href: 'index.html#artists', label: 'Artists', key: 'artists' },
-    { href: 'index.html#rent',  label: 'Show Here', key: 'rent' },
+    { href: 'index.html#rent',  label: 'Artist Enquiries', key: 'rent' },
     { href: 'index.html#hours', label: 'Visit',     key: 'visit' },
   ];
   if (navLinks) {
