@@ -1,175 +1,202 @@
 /* ============================================================
-   GLOUCESTER FRAMING — EDITABLE CONTENT
+   GLOUCESTER GALLERY — EDITABLE CONTENT
    ------------------------------------------------------------
    This is the ONLY file you need to edit to update the website.
    Change the text between the "quotation marks", save the file,
-   and upload it. The website updates itself.
+   and upload it alongside index.html.
 
    TIPS
    • Only change what's INSIDE the "quote marks".
    • Keep the commas at the end of each line.
-   • For images, see the GALLERY section at the bottom.
-   • If something breaks, you probably deleted a quote, comma
-     or bracket — undo your change and try again.
+   • To add an artist, copy an existing artist block and paste it.
+   • If something breaks, undo your change and try again.
    ============================================================ */
 
-window.CONTENT = {
+window.GALLERY = {
 
-  /* ---------- BUSINESS DETAILS (top bar + footer) ---------- */
+  /* ---------- BUSINESS DETAILS ---------- */
   business: {
-    address1: "9 Commercial Road",
+    name: "Gloucester Gallery",
+    tagline: "A rotating showcase of local talent — in the heart of Gloucester",
+    address1: "7 Commercial Road",
     address2: "Gloucester · GL1 2DY",
     phone: "01452 524 272",
-    phoneLink: "01452524272",          // digits only, no spaces
-    email: "info@gloucesterframing.com",
-    // Get-directions button. Paste a Google Maps link here if you
-    // want a precise pin; otherwise leave as is.
-    mapsUrl: "https://www.google.com/maps/dir/?api=1&destination=Gloucester+Framing+9+Commercial+Road+Gloucester+GL1+2DY",
-    // ---- SOCIAL MEDIA ----
-    // You currently have no social presence, so these are switched
-    // OFF. When you set up an account, just paste the full link
-    // (e.g. "https://www.facebook.com/YourPage") between the quotes
-    // and that icon will automatically appear on the site.
-    // Leave a link as "" (empty) to keep that icon hidden.
+    phoneLink: "01452524272",
+    email: "gallery@gloucesterframing.com",
+    mapsUrl: "https://www.google.com/maps/dir/?api=1&destination=7+Commercial+Road+Gloucester+GL1+2DY",
+    framingShopUrl: "index.html",
     facebook: "",
-    twitter: "",
-    linkedin: "",
+    instagram: "",
   },
 
-  /* ---------- OPENING HOURS ----------
-     Edit the times, or write "Closed". Add/remove days if needed. */
+  /* ---------- OPENING HOURS ---------- */
   openingHours: [
-    { day: "Monday",    hours: "9:30am – 6:00pm" },
-    { day: "Tuesday",   hours: "9:30am – 6:00pm" },
-    { day: "Wednesday", hours: "9:30am – 6:00pm" },
-    { day: "Thursday",  hours: "9:30am – 6:00pm" },
-    { day: "Friday",    hours: "9:30am – 6:00pm" },
-    { day: "Saturday",  hours: "10.00am – 4:00pm" },
+    { day: "Monday",    hours: "9:30am – 5:30pm" },
+    { day: "Tuesday",   hours: "9:30am – 5:30pm" },
+    { day: "Wednesday", hours: "9:30am – 5:30pm" },
+    { day: "Thursday",  hours: "9:30am – 5:30pm" },
+    { day: "Friday",    hours: "9:30am – 5:30pm" },
+    { day: "Saturday",  hours: "10:00am – 4:00pm" },
     { day: "Sunday",    hours: "Closed" }
   ],
 
-  /* ---------- PROMOTION BANNER ----------
-     Set show to true to display a banner across the top of the page.
-     Set to false to hide it completely. */
+  /* ---------- PROMO BANNER ----------
+     Set show: true to display a banner at the top of the page. */
   promo: {
-    show: false,
-    text: "Spring offer — 15% off all medal & memorabilia framing throughout June."
+    show: true,
+    text: "Now showing: Sarah Meredith — 'Along the Severn' · Original watercolours · Until 30 June"
   },
 
-  /* ---------- HERO (top of page) ---------- */
+  /* ---------- HERO ---------- */
   hero: {
-    eyebrow: "Bespoke framing · Est. in the heart of Gloucester",
-    headingLine1: "Framing is part of the",
-    headingEm: "art.",                 // shown in red italic
-    lead: "Hand-made, conservation-standard frames for fine art, photographs, medals, sports shirts and almost anything you can imagine — crafted in our Gloucester workshop.",
-    buttonText: "View our work",       // links to the gallery
-    frameCaption: "Your work, beautifully presented.",
-    frameImage:   "images/cert.jpg",   // ← change this to any image in your images/ folder
-    tag: "Hand-made"
+    eyebrow: "Gloucester · A new artist every month",
+    headingLine1: "Where local art",
+    headingEm: "comes alive.",
+    lead: "Our intimate gallery on Commercial Road hands over its walls to a different local artist every month — giving Gloucester a constantly fresh window onto the talent on its doorstep.",
+    ctaText: "See current exhibition",
+    ctaLink: "#current",
   },
 
-  /* ---------- SPECIALITIES STRIP (scrolling words) ---------- */
+  /* ---------- SCROLLING STRIP ---------- */
   strip: [
-    "Fine Art", "Sports Shirts", "Medals & Military", "Certificates",
-    "Box Frames", "Canvas Stretching", "Needlework", "Commercial"
+    "Oils", "Watercolour", "Photography", "Printmaking",
+    "Sculpture", "Mixed Media", "Illustration", "Ceramics"
   ],
 
-  /* ---------- ABOUT ---------- */
+  /* ---------- ABOUT THE GALLERY ---------- */
   about: {
-    kicker: "About us",
-    leadLine: "With over thirty years' framing experience —  we treat every piece that comes through our doors as a work of art in its own right.",
-    paragraph1: "At Gloucester Framing we offer a fully bespoke fine art and commercial framing service for the home, office, shops and galleries. Everything is produced by hand in our workshop, in line with the Fine Art Trade Guild's conservation framing standards.",
-    paragraph2: "With over 500 moulding samples to view in-store and helpful, honest advice on every project, we'll find the frame that enhances your work and displays it in the best possible light.",
+    kicker: "About the gallery",
+    heading: "A new view, every month",
+    body1: "Gloucester Gallery sits next door to Gloucester Framing on Commercial Road — sharing a wall, a passion for art, and nothing else. We are a deliberately small, intimate space: one artist, one month, all the walls.",
+    body2: "Each exhibition is a genuine takeover. The featured artist curates the hang, sets prices, and sells their work directly through the gallery. Works are available to buy online and collect in-gallery.",
+    body3: "We are proudly independent, proudly local, and free to visit.",
     stats: [
-      { number: "30+",  label: "Years experience" },
-      { number: "500+", label: "Moulding samples" },
-      { number: "10+",  label: "Years on Commercial Road" }
+      { number: "12",   label: "Exhibitions per year" },
+      { number: "100%", label: "Local artists" },
+      { number: "Free",  label: "Entry, always" }
     ],
-    visualLabel: "Conservation-standard craft, made by hand in Gloucester."
+    // This text appears in the highlighted card on the about section
+    launchNote: "Artists can choose to mark the start of their exhibition with a launch event — a great way to generate buzz and get first sales. We help arrange and facilitate these when artists want them.",
   },
 
-  /* ---------- SERVICES (the six cards) ---------- */
-  services: {
-    kicker: "What we frame",
-    heading: "You name it, we frame it",
-    cards: [
-      { title: "Original Artwork",            text: "Oils stretched and tray-framed, watercolours, prints and originals — treated with the care they deserve." },
-      { title: "Sports Shirts & Memorabilia", text: "Display and protect treasured shirts, signed prints and memorabilia in a custom-fitted frame." },
-      { title: "Prints & Photos",             text: "Bespoke frames and a wide range of mounts — including multi-aperture mounts — to make your photos come to life." },
-      { title: "Medal Framing",               text: "Vast experience with military and sporting medals, combined with memorabilia to create a fitting tribute." },
-      { title: "Certificate Framing",         text: "Make hard-earned certificates stand out with the right mount and frame — your achievements, shown off in style." },
-      { title: "Box & 3D Frames",             text: "Wedding flowers, jackets, models, baby casts — even a Mitsubishi Evo camshaft. Challenge us; we'll find a solution." }
-    ]
-  },
-
-  /* ---------- PROCESS (the four steps) ---------- */
-  process: {
+  /* ---------- HOW IT WORKS ---------- */
+  howItWorks: {
     kicker: "How it works",
-    heading: "From your hands to the wall",
+    heading: "One artist. One month. All the walls.",
     steps: [
-      { title: "Bring it in",       text: "Pop into the workshop on Commercial Road with your piece — no appointment needed." },
-      { title: "Choose together",   text: "Browse 500+ samples and we'll advise on mouldings, mounts and glass to suit your work." },
-      { title: "Hand-crafted",      text: "Our skilled team build your frame by hand to conservation standards in our workshop." },
-      { title: "Ready to display",  text: "Collect your finished frame — fitted, protected and ready to hang." }
+      { title: "A new artist monthly",   text: "Each calendar month a selected local artist takes over the gallery entirely — their work, their curation, their vision." },
+      { title: "Optional launch event",  text: "Artists can choose to open with a launch event. We help facilitate these — a great way to build an audience and make first sales." },
+      { title: "Buy online or in-store", text: "Every piece on display has a price. Buy securely online and collect from the gallery at your convenience." },
+      { title: "Framing next door",      text: "Need it framed? Our sister workshop next door offers framing for purchased works at a special gallery rate." }
     ]
   },
 
   /* ============================================================
-     GALLERY — YOUR WORK PHOTOS
+     ARTISTS
      ------------------------------------------------------------
-     HOW TO ADD A PHOTO:
-     1. Put your image file (e.g. medals.jpg) in the SAME folder
-        as the website, ideally in an "images" folder.
-     2. Add a line below in this format:
-            { src: "images/medals.jpg", caption: "Framed war medals" },
-     3. Keep the comma at the end. Save and upload.
+     STATUS OPTIONS:
+       "current"   — showing right now
+       "upcoming"  — next in the schedule
+       "past"      — archive entry
 
-     • "src" is the path to the image file.
-     • "caption" shows when someone hovers over it (optional —
-        you can leave it as "").
-     • The first item can be "wide: true" to make it span two
-        columns. Order them however you like.
-     • If the list is EMPTY, coloured placeholders are shown
-        instead, so the site never looks broken.
+     WORKS: each work needs:
+       title, medium, size, price (number, £), src (image path)
+       available: true or false
+
+     LAUNCH EVENTS:
+       launchDate and launchNote are optional.
+       Leave launchDate as "" if there is no launch event.
      ============================================================ */
-  gallery: {
-    kicker: "Our work",
-    heading: "A few pieces we're proud of",
-    items: [
-      // ---- THESE ARE EXAMPLES so you can see how it works. ----
-      // Replace the src/caption with your own photos, or delete
-      // these lines once you've added your real ones.
-      { src: "images/memorabilia_police.jpg", caption: "Medals, certs, warrants etc" },
-      { src: "images/jacket dinner.jpg",  caption: "all types of shirt framed" },
-      { src: "images/fan.jpg",    caption: "object framing, we frame everything" },
+  artists: [
 
-      { src: "images/shirt_moto.jpg",     caption: "Framed GBR cycling shirts" },
-      { src: "images/football_2.jpg",     caption: "Framed signed shirt" },
-      { src: "images/football_3.jpg",     caption: "Framed signed shirt" },
-      { src: "images/football_4.jpg",     caption: "Framed signed shirt" },
-      { src: "images/football_5.jpg",     caption: "Framed signed shirt" },
-      { src: "images/object_snooker.jpg", caption: "Signed snooker memorabilia" },
-      { src: "images/flag_2.jpg",         caption: "Military flag framing" },
-      { src: "images/jacket_dinner.jpg",  caption: "Military dress jacket" },
-      { src: "images/jacket_black.jpg",   caption: "Framed jacket" },
-      { src: "images/Rugby_1.jpg",        caption: "Framed rugby shirt" },
-      // YOUR REAL PHOTOS go here:
-      { src: "images/flag.jpg", caption: "Flag framing" },
-      { src: "images/football.jpg", caption: "Framed signed shirt" },
-{ src: "images/jacket_red.jpg", caption: "Military jacket" },
-{ src: "images/object_trowel.jpg", caption: "Object framing" },
-{ src: "images/cert.jpg", caption: "Certificates & warrants" },
-    ]
+    {
+      id: "sarah-meredith",
+      status: "current",
+      name: "Sarah Meredith",
+      month: "June 2026",
+      discipline: "Watercolour",
+      portrait: "images/artist-sarah.jpg",
+      tagline: "Quiet light on familiar water",
+      bio: "Sarah Meredith has painted the rivers and flood plains of the Severn Vale for fifteen years. Her watercolours are quiet, luminous things — full of the particular grey-gold light of the West Country. She lives and works in Minsterworth.",
+      launchDate: "Friday 6 June, 6:30 – 9:00pm",
+      launchNote: "Free entry. Wine provided. All welcome.",
+      works: [
+        { title: "Morning Mist, Westgate Bridge", medium: "Watercolour on paper", size: "42 × 59 cm", price: 380, available: true,  src: "images/sarah-1.jpg" },
+        { title: "Flood Plain, January",          medium: "Watercolour on paper", size: "30 × 40 cm", price: 260, available: false, src: "images/sarah-2.jpg" },
+        { title: "The Severn at Minsterworth",    medium: "Watercolour on paper", size: "50 × 70 cm", price: 520, available: true,  src: "images/sarah-3.jpg" },
+        { title: "Low Tide",                      medium: "Watercolour on paper", size: "21 × 29 cm", price: 145, available: true,  src: "images/sarah-4.webp" },
+        { title: "Ley Lines",                     medium: "Watercolour on paper", size: "42 × 59 cm", price: 395, available: true,  src: "images/sarah-5.jpg" },
+        { title: "Autumn Estuary",                medium: "Watercolour on paper", size: "30 × 40 cm", price: 280, available: true,  src: "images/sarah-6.webp" },
+      ]
+    },
+
+    {
+      id: "james-okafor",
+      status: "upcoming",
+      name: "James Okafor",
+      month: "July 2026",
+      discipline: "Oil on Canvas",
+      portrait: "images/artist-james.jpg",
+      tagline: "Gloucester in bold colour",
+      bio: "James Okafor paints Gloucester's streets, markets and faces with an expressionist boldness that stops people in their tracks. His oils are built up in thick impasto — colour and texture as much as image. James is based in the Barton Street area of the city.",
+      launchDate: "",
+      launchNote: "",
+      works: [
+        { title: "Eastgate Market, Saturday",  medium: "Oil on canvas", size: "60 × 80 cm", price: 750, available: true, src: "images/james-1.jpg" },
+        { title: "Barton Street Portrait I",   medium: "Oil on canvas", size: "50 × 60 cm", price: 620, available: true, src: "images/james-2.jpg" },
+        { title: "Cathedral, Late Afternoon",  medium: "Oil on canvas", size: "70 × 90 cm", price: 980, available: true, src: "images/james-3.jpg" },
+      ]
+    },
+
+    {
+      id: "nina-fletcher",
+      status: "past",
+      name: "Nina Fletcher",
+      month: "May 2026",
+      discipline: "Photography",
+      portrait: "images/artist-nina.jpg",
+      tagline: "Gloucester through a different lens",
+      bio: "Nina Fletcher's documentary photography finds the poetic in the everyday. Her May exhibition, 'Ordinary Days', focused entirely on the city's lesser-known corners.",
+      launchDate: "Friday 2 May, 6:30 – 9:00pm",
+      launchNote: "Free entry. All welcome.",
+      works: [
+        { title: "Commercial Road, 6am",     medium: "Archival pigment print", size: "40 × 60 cm", price: 195, available: false, src: "images/nina-1.jpg" },
+        { title: "The Docks in Fog",         medium: "Archival pigment print", size: "60 × 90 cm", price: 320, available: false, src: "images/nina-2.jpg" },
+        { title: "Westgate Street, Sunday",  medium: "Archival pigment print", size: "40 × 60 cm", price: 195, available: true,  src: "images/nina-3.jpg" },
+      ]
+    }
+
+  ],
+
+  /* ---------- ARTIST ENQUIRY SECTION ----------
+     This is the "Show your work" section.
+     The points list summarises what artists get — keep it honest and factual. */
+  rentTheGallery: {
+    kicker: "Are you an artist?",
+    heading: "Take over our walls.",
+    body: "We select artists on a rolling basis throughout the year. If you work in any medium and are based in or around Gloucestershire, we'd love to hear from you. Get in touch and we'll send you our full information pack — including our current fees, commission structure, and available dates.",
+    points: [
+      "A full calendar month — all walls, yours to curate",
+      "Your work listed and sold through this website",
+      "Optional launch event — we'll help you arrange and facilitate it",
+      "Framing support from our workshop next door",
+      "Straightforward space rental fee and sales commission — details in our info pack"
+    ],
+    formHeading: "Request an information pack",
+    // Text shown on the button
+    buttonText: "Send request",
+    // Message shown after the form is submitted
+    successMessage: "Thank you — we'll send our information pack to your email shortly.",
   },
 
-  /* ---------- CONTACT / CALL-TO-ACTION ---------- */
-  contact: {
-    heading: "Let's frame something beautiful.",
-    text: "Everything we do is bespoke and face-to-face. Bring your piece in, or get in touch for friendly, honest advice — we're confident we can come up with a solution for whatever you'd like framed.",
-    // Shown as small, low-key text under the contact buttons.
-    // Leave as "" to hide it entirely.
-    smallNote: "Collection and delivery can be arranged for larger pieces or where access is difficult — please ask for details.",
-    footerBlurb: "Quality, affordable, hand-made framing from the heart of Gloucester, between Gloucester Quays and the city centre — come and visit."
+  /* ---------- STRIPE PAYMENT ----------
+     Replace with your real Stripe publishable key when ready.
+     Set testMode: true to simulate payments without charging anyone. */
+  stripe: {
+    publishableKey: "pk_test_REPLACE_WITH_YOUR_KEY",
+    testMode: true,
+    currency: "gbp",
+    collectNote: "Works are collected from Gloucester Gallery, 7 Commercial Road, GL1 2DY. You will receive a confirmation email with collection details after purchase."
   }
 
 };
