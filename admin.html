@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gloucester Gallery — Content Editor</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  :root{
+    --bg:#f6f5f1; --panel:#ffffff; --ink:#1a1a1a; --muted:#6b6b6b; --line:#e3e1da;
+    --accent:#7a5c3e; --accent2:#b08d57; --ok:#2e7d4f; --warn:#b23b3b; --soft:#f0eee8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.45;-webkit-text-size-adjust:100%}
+  header{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line);
+         padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  header h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.2px}
+  header .spacer{flex:1}
+  .status{font-size:12px;color:var(--muted)}
+  .status b{color:var(--ok)}
+  .toolbtn{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--soft);
+           color:var(--ink);padding:7px 11px;border-radius:8px;cursor:pointer}
+  .toolbtn:hover{background:#e9e6df}
+  .toolbtn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .toolbtn.primary:hover{background:#66492f}
+  nav.tabs{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px 0;position:sticky;top:57px;background:var(--bg);z-index:15}
+  nav.tabs button{font:inherit;font-size:14px;border:1px solid var(--line);border-bottom:none;background:var(--soft);
+                  padding:9px 14px;border-radius:10px 10px 0 0;cursor:pointer;color:var(--muted)}
+  nav.tabs button.active{background:var(--panel);color:var(--ink);font-weight:600}
+  main{max-width:860px;margin:0 auto;padding:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+  .card h2{font-size:15px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.6px;color:var(--accent)}
+  .card .sub{font-size:13px;color:var(--muted);margin:0 0 14px}
+  label.field{display:block;margin:10px 0}
+  label.field > span{display:block;font-size:12px;font-weight:600;color:#444;margin-bottom:4px}
+  label.field .hint{font-weight:400;color:var(--muted)}
+  input[type=text],input[type=tel],input[type=email],input[type=number],input[type=url],textarea,select{
+    width:100%;font:inherit;font-size:14px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+  textarea{resize:vertical;min-height:64px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .row > *{flex:1;min-width:120px}
+  .chk{display:flex;align-items:center;gap:8px;font-size:14px;margin:8px 0}
+  .chk input{width:18px;height:18px}
+  .artist{border:1px solid var(--line);border-radius:12px;margin-bottom:14px;overflow:hidden}
+  .artist .ahead{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--soft);cursor:pointer}
+  .artist .ahead .thumb{width:40px;height:40px;border-radius:8px;object-fit:cover;background:#ddd;flex:none}
+  .artist .ahead .who{flex:1;min-width:0}
+  .artist .ahead .who b{display:block;font-size:15px}
+  .artist .ahead .who small{color:var(--muted)}
+  .pill{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);white-space:nowrap}
+  .pill.current{background:#e7f3ec;color:var(--ok);border-color:#bfe0cb}
+  .pill.upcoming{background:#fff5e6;color:#8a6d1f;border-color:#eddcb3}
+  .abody{padding:14px;border-top:1px solid var(--line);display:none}
+  .artist.open .abody{display:block}
+  .work{border:1px dashed var(--line);border-radius:10px;padding:12px;margin:10px 0;background:#fbfaf7}
+  .imgpick{display:flex;gap:12px;align-items:center;margin:6px 0}
+  .imgpick .prev{width:70px;height:70px;border-radius:8px;object-fit:cover;background:#eee;border:1px solid var(--line);flex:none}
+  .imgpick .drop{flex:1;border:2px dashed var(--line);border-radius:8px;padding:10px;text-align:center;font-size:12px;color:var(--muted);cursor:pointer;background:#fff}
+  .imgpick .drop.over{border-color:var(--accent);background:#faf6f0}
+  .imgpick .drop.new{border-color:var(--ok)}
+  .mini{font-size:12px;color:var(--muted)}
+  .del{background:#fff;border:1px solid #e5c9c9;color:var(--warn);font-size:12px;padding:5px 9px;border-radius:7px;cursor:pointer}
+  .del:hover{background:#fbeaea}
+  .add{background:#fff;border:1px dashed var(--accent2);color:var(--accent);font-size:13px;padding:9px 12px;border-radius:9px;cursor:pointer;width:100%}
+  .add:hover{background:#faf6f0}
+  .flex{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .flex.end{justify-content:flex-end}
+  .warnbox{border:1px solid #eed7d7;background:#fdf3f3;border-radius:10px;padding:12px;margin:10px 0;font-size:13px}
+  .okbox{border:1px solid #cfe7d8;background:#f1f9f4;border-radius:10px;padding:12px;margin:10px 0;font-size:13px}
+  .warnbox ul,.okbox ul{margin:6px 0 0;padding-left:18px}
+  code{background:var(--soft);padding:1px 5px;border-radius:4px;font-size:12px}
+  .steps{counter-reset:s;margin:12px 0 0;padding:0;list-style:none}
+  .steps li{counter-increment:s;position:relative;padding:8px 0 8px 34px;border-top:1px solid var(--line);font-size:14px}
+  .steps li:before{content:counter(s);position:absolute;left:0;top:8px;width:24px;height:24px;background:var(--accent);color:#fff;border-radius:50%;text-align:center;line-height:24px;font-size:13px;font-weight:700}
+  .filelist{font-size:13px;margin:8px 0;padding:0;list-style:none}
+  .filelist li{padding:6px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .tag{font-size:11px;background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:2px 6px;color:var(--muted)}
+  .hide{display:none!important}
+  .loginwrap{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+  .logincard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:28px 24px;max-width:340px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+  .loginlogo{font-size:30px}
+  .logincard h2{margin:6px 0 2px;font-size:18px}
+  .logincard p{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .logincard input{margin-bottom:12px}
+  .loginerr{color:var(--warn);font-size:13px;min-height:18px;margin-top:8px}
+  body.locked{overflow:hidden}
+  @media(max-width:560px){ main{padding:10px} header h1{font-size:15px} }
+</style>
+</head>
+<body>
+<header>
+  <h1>🖼️ Gallery Content Editor</h1>
+  <span id="status" class="status">Loading…</span>
+  <span class="spacer"></span>
+  <button class="toolbtn" id="btnLoad">↻ Reload from site</button>
+  <button class="toolbtn" id="btnImport">📂 Import file</button>
+  <input type="file" id="fileImport" accept=".js,text/javascript" class="hide">
+  <button class="toolbtn" id="btnLogout" style="display:none">Log out</button>
+  <button class="toolbtn primary" id="btnSave">💾 Save to site</button>
+</header>
+
+<div id="login" class="loginwrap">
+  <form id="loginform" class="logincard">
+    <div class="loginlogo">🖼️</div>
+    <h2>Gallery editor</h2>
+    <p>Enter the editor password to make changes.</p>
+    <input type="password" id="pw" placeholder="Password" autocomplete="current-password">
+    <button class="toolbtn primary" type="submit" style="width:100%;padding:11px">Log in</button>
+    <div id="loginerr" class="loginerr"></div>
+  </form>
+</div>
+
+<nav class="tabs" id="tabs"></nav>
+<main id="main"></main>
+
+<script>
+/* ============================================================
+   Gloucester Gallery — self-contained content editor
+   Loads the live content.js, lets you edit everything with a
+   friendly UI, drag in real images, and export an updated
+   content.js (+ any new images) to upload to your site.
+   Nothing here touches the live site until YOU upload the files.
+   ============================================================ */
+
+const LIVE_BASE = ""; // same origin — this editor is served by the Worker
+const LSKEY = "ggAdminDraft_v1";
+const DISCIPLINES = ["Oil painting","Oil on Canvas","Watercolour","Acrylic","Photography",
+  "Printmaking","Sculpture / 3D","Ceramics","Mixed media","Illustration","Drawing / Pastel","Digital art","Other"];
+const STATUSES = [["current","Current show"],["upcoming","Upcoming show"],["past","Past show"]];
+
+let DATA = null;         // working copy of GALLERY
+let newImages = {};      // { "images/xyz.jpg": dataURL }  — images added this session
+let activeTab = "artists";
+let openArtist = 0;
+
+/* ---------- minimal fallback seed (only used if live load fails) ---------- */
+function seed(){ return {
+  business:{name:"Gloucester Gallery",tagline:"",address1:"",address2:"",phone:"",phoneLink:"",email:"",mapsUrl:"",framingShopUrl:"",facebook:"",instagram:""},
+  openingHours:[["Monday"],["Tuesday"],["Wednesday"],["Thursday"],["Friday"],["Saturday"],["Sunday"]].map(d=>({day:d[0],hours:"Closed"})),
+  promo:{show:false,text:""},
+  hero:{eyebrow:"",headingLine1:"",headingEm:"",lead:"",ctaText:"",ctaLink:""},
+  strip:["","","","","","","",""],
+  about:{kicker:"",heading:"",body1:"",body2:"",body3:"",stats:[{number:"",label:""},{number:"",label:""},{number:"",label:""}],launchNote:""},
+  howItWorks:{kicker:"",heading:"",steps:[{title:"",text:""},{title:"",text:""},{title:"",text:""},{title:"",text:""}]},
+  artists:[],
+  rentTheGallery:{kicker:"",heading:"",body:"",points:["","","","",""],formHeading:"",buttonText:"",successMessage:""},
+  stripe:{publishableKey:"",testMode:true,currency:"gbp",collectNote:""}
+};}
+
+/* ---------- helpers ---------- */
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function el(tag, attrs, kids){
+  const e=document.createElement(tag);
+  if(attrs) for(const k in attrs){
+    if(k==="class") e.className=attrs[k];
+    else if(k==="html") e.innerHTML=attrs[k];
+    else if(k.startsWith("on")&&typeof attrs[k]==="function") e.addEventListener(k.slice(2),attrs[k]);
+    else e.setAttribute(k,attrs[k]);
+  }
+  (kids||[]).forEach(c=>{ if(c==null)return; e.appendChild(typeof c==="string"?document.createTextNode(c):c); });
+  return e;
+}
+function slug(s){ return (s||"").toString().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,32)||"item"; }
+function rand(){ return Math.random().toString(36).slice(2,6); }
+function setStatus(msg, good){ const s=document.getElementById("status"); s.innerHTML = good? "<b>"+msg+"</b>" : msg; }
+
+/* image resolves to a preview URL: new upload dataURL, else the live-site copy */
+function imgURL(path){
+  if(!path) return "";
+  if(newImages[path]) return newImages[path];
+  if(/^data:/.test(path)) return path;
+  return LIVE_BASE + "/" + path.replace(/^\//,"");
+}
+
+/* ---------- load / import / autosave ---------- */
+function loadLive(){
+  setStatus("Loading live site…");
+  return new Promise((res)=>{
+    const s=document.createElement("script");
+    s.src=LIVE_BASE+"/content.js?cb="+Date.now();
+    s.onload=()=>{ if(window.GALLERY){ res(clone(window.GALLERY)); } else res(null); };
+    s.onerror=()=>res(null);
+    document.head.appendChild(s);
+  });
+}
+function parseContentJs(text){
+  const fn=new Function("window", text+"\n; return (typeof GALLERY!=='undefined') ? GALLERY : window.GALLERY;");
+  return fn({});
+}
+function normalise(g){
+  // guarantee every expected shape exists so the editor never crashes on partial data
+  const s=seed(); const out=Object.assign({}, s, g||{});
+  out.business=Object.assign({}, s.business, g&&g.business);
+  out.promo=Object.assign({}, s.promo, g&&g.promo);
+  out.hero=Object.assign({}, s.hero, g&&g.hero);
+  out.about=Object.assign({}, s.about, g&&g.about);
+  out.about.stats=(out.about.stats&&out.about.stats.length?out.about.stats:s.about.stats);
+  out.howItWorks=Object.assign({}, s.howItWorks, g&&g.howItWorks);
+  out.rentTheGallery=Object.assign({}, s.rentTheGallery, g&&g.rentTheGallery);
+  out.stripe=Object.assign({}, s.stripe, g&&g.stripe);
+  out.strip=(out.strip&&out.strip.length?out.strip:s.strip);
+  out.openingHours=(out.openingHours&&out.openingHours.length?out.openingHours:s.openingHours);
+  out.artists=(out.artists||[]).map(a=>({
+    id:a.id||slug(a.name),status:a.status||"past",name:a.name||"",month:a.month||"",
+    discipline:a.discipline||"",portrait:a.portrait||"",tagline:a.tagline||"",bio:a.bio||"",
+    launchDate:a.launchDate||"",launchNote:a.launchNote||"",
+    works:(a.works||[]).map(w=>({title:w.title||"",medium:w.medium||"",size:w.size||"",
+      price:Number(w.price)||0,available:w.available!==false,src:w.src||""}))
+  }));
+  return out;
+}
+function autosave(){
+  try{ localStorage.setItem(LSKEY, JSON.stringify({t:Date.now(),data:DATA})); setStatus("Draft saved",true); }
+  catch(e){ setStatus("Draft (text) not saved — quota"); }
+}
+let saveTimer=null;
+function touch(){ clearTimeout(saveTimer); saveTimer=setTimeout(autosave,400); }
+
+/* ---------- image processing ---------- */
+function processImage(file, mode){
+  return new Promise((res,rej)=>{
+    const fr=new FileReader();
+    fr.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const c=document.createElement("canvas"); const ctx=c.getContext("2d");
+        if(mode==="portrait"){
+          const S=1000; c.width=S;c.height=S;
+          const scale=Math.max(S/img.width,S/img.height);
+          const cw=S/scale, ch=S/scale;
+          ctx.drawImage(img,(img.width-cw)/2,(img.height-ch)/2,cw,ch,0,0,S,S);
+        } else {
+          const MAX=1600; const scale=Math.min(1,MAX/Math.max(img.width,img.height));
+          c.width=Math.round(img.width*scale); c.height=Math.round(img.height*scale);
+          ctx.drawImage(img,0,0,c.width,c.height);
+        }
+        res(c.toDataURL("image/jpeg",0.85));
+      };
+      img.onerror=()=>rej(new Error("bad image"));
+      img.src=e.target.result;
+    };
+    fr.onerror=()=>rej(new Error("read error"));
+    fr.readAsDataURL(file);
+  });
+}
+async function assignImage(file, mode, target, field, baseName){
+  if(!/^image\//.test(file.type)){ alert("Please choose an image file (jpg or png)."); return false; }
+  try{
+    const dataURL=await processImage(file,mode);
+    // remove previous NEW image for this slot if any
+    const prev=target[field];
+    if(prev && newImages[prev]) delete newImages[prev];
+    const path="images/"+baseName+"-"+rand()+".jpg";
+    newImages[path]=dataURL;
+    target[field]=path;
+    touch();
+    return true;
+  }catch(e){ alert("Sorry, that image could not be read. Try a different file."); return false; }
+}
+
+/* ---------- reusable field builders ---------- */
+function field(label, obj, key, opts){
+  opts=opts||{};
+  const wrap=el("label",{class:"field"});
+  const span=el("span",{},[label]);
+  if(opts.hint) span.appendChild(el("span",{class:"hint"},[" — "+opts.hint]));
+  wrap.appendChild(span);
+  let input;
+  if(opts.area){ input=el("textarea",{rows:opts.rows||3}); }
+  else if(opts.select){ input=el("select"); opts.select.forEach(o=>{ const v=Array.isArray(o)?o[0]:o, t=Array.isArray(o)?o[1]:o; input.appendChild(el("option",{value:v},[t])); }); }
+  else { input=el("input",{type:opts.type||"text"}); }
+  input.value = obj[key]==null? "" : obj[key];
+  input.addEventListener("input",()=>{
+    let v=input.value;
+    if(opts.type==="number") v = v===""?0:Number(v);
+    obj[key]=v; touch();
+    if(opts.onchange) opts.onchange();
+  });
+  wrap.appendChild(input);
+  return wrap;
+}
+function checkbox(label, obj, key, onchange){
+  const wrap=el("label",{class:"chk"});
+  const inp=el("input",{type:"checkbox"}); inp.checked=!!obj[key];
+  inp.addEventListener("change",()=>{ obj[key]=inp.checked; touch(); if(onchange)onchange(); });
+  wrap.appendChild(inp); wrap.appendChild(el("span",{},[label]));
+  return wrap;
+}
+function imagePicker(target, field, mode, baseName){
+  const box=el("div",{class:"imgpick"});
+  const prev=el("img",{class:"prev",alt:""});
+  const url=imgURL(target[field]); if(url) prev.src=url;
+  const isNew=target[field]&&newImages[target[field]];
+  const drop=el("div",{class:"drop"+(isNew?" new":"")},[
+    isNew? "✓ New image ready to upload" : (target[field]? "Current image — click/drag to replace" : "Click or drag an image here")
+  ]);
+  const inp=el("input",{type:"file",accept:"image/*",class:"hide"});
+  const doFile=async f=>{ if(await assignImage(f,mode,target,field,baseName)) render(); };
+  drop.addEventListener("click",()=>inp.click());
+  inp.addEventListener("change",()=>{ if(inp.files[0]) doFile(inp.files[0]); });
+  drop.addEventListener("dragover",e=>{e.preventDefault();drop.classList.add("over");});
+  drop.addEventListener("dragleave",()=>drop.classList.remove("over"));
+  drop.addEventListener("drop",e=>{e.preventDefault();drop.classList.remove("over"); if(e.dataTransfer.files[0]) doFile(e.dataTransfer.files[0]);});
+  box.appendChild(prev); box.appendChild(drop); box.appendChild(inp);
+  return box;
+}
+
+/* ============================================================
+   TAB RENDERERS
+   ============================================================ */
+function tabArtists(){
+  const wrap=el("div");
+  const counts=DATA.artists.reduce((a,x)=>{a[x.status]=(a[x.status]||0)+1;return a;},{});
+  wrap.appendChild(el("div",{class:"card"},[
+    el("h2",{},["Artists & their work"]),
+    el("p",{class:"sub"},[
+      DATA.artists.length+" artist(s) · "+
+      (counts.current||0)+" current, "+(counts.upcoming||0)+" upcoming, "+(counts.past||0)+" past. "+
+      "This is what you'll change most months."
+    ]),
+    ...DATA.artists.map((a,i)=>artistCard(a,i)),
+    el("button",{class:"add",onclick:()=>{ DATA.artists.unshift({id:"artist-"+rand(),status:"upcoming",name:"",month:"",discipline:"",portrait:"",tagline:"",bio:"",launchDate:"",launchNote:"",works:[]}); openArtist=0; render(); }},["+ Add an artist"])
+  ]));
+  return wrap;
+}
+function artistCard(a,i){
+  const head=el("div",{class:"ahead",onclick:(e)=>{ if(e.target.closest("button"))return; openArtist = openArtist===i? -1 : i; render(); }},[
+    (function(){ const t=el("img",{class:"thumb",alt:""}); const u=imgURL(a.portrait); if(u)t.src=u; return t; })(),
+    el("div",{class:"who"},[ el("b",{},[a.name||"(unnamed artist)"]), el("small",{},[(a.discipline||"—")+" · "+(a.month||"no month")]) ]),
+    el("span",{class:"pill "+(a.status||"")},[ (STATUSES.find(s=>s[0]===a.status)||["","—"])[1] ])
+  ]);
+  const works=el("div",{},[
+    ...a.works.map((w,wi)=>workBlock(a,w,wi)),
+    el("button",{class:"add",onclick:()=>{ a.works.push({title:"",medium:"",size:"",price:0,available:true,src:""}); render(); }},["+ Add a work"])
+  ]);
+  const body=el("div",{class:"abody"},[
+    el("div",{class:"row"},[ field("Full name",a,"name"), field("Exhibition month",a,"month",{hint:"e.g. June 2026"}) ]),
+    el("div",{class:"row"},[ field("Status",a,"status",{select:STATUSES,onchange:render}), field("Discipline",a,"discipline",{select:DISCIPLINES}) ]),
+    field("Tagline",a,"tagline",{hint:"one memorable line"}),
+    field("Bio / statement",a,"bio",{area:true,rows:4}),
+    el("div",{class:"row"},[ field("Launch date",a,"launchDate",{hint:"optional"}), field("Launch note",a,"launchNote",{hint:"optional"}) ]),
+    el("label",{class:"field"},[el("span",{},["Portrait photo ",el("span",{class:"hint"},["— square works best"])])]),
+    imagePicker(a,"portrait","portrait","artist-"+slug(a.id||a.name)),
+    el("p",{class:"mini",style:"margin-top:14px;font-weight:600;color:#444"},["Works"]),
+    works,
+    el("div",{class:"flex end",style:"margin-top:12px"},[
+      el("button",{class:"del",onclick:()=>{ if(confirm("Remove "+(a.name||"this artist")+" and all their works?")){ DATA.artists.splice(i,1); openArtist=-1; render(); } }},["Delete artist"])
+    ])
+  ]);
+  return el("div",{class:"artist"+(openArtist===i?" open":"")},[head,body]);
+}
+function workBlock(a,w,wi){
+  return el("div",{class:"work"},[
+    el("div",{class:"row"},[ field("Title",w,"title"), field("Price £",w,"price",{type:"number"}) ]),
+    el("div",{class:"row"},[ field("Medium",w,"medium",{hint:"e.g. Oil on canvas"}), field("Size",w,"size",{hint:"e.g. 42 × 59 cm"}) ]),
+    imagePicker(w,"src","work",slug(a.id||a.name)+"-"+slug(w.title||("work"+(wi+1)))),
+    el("div",{class:"flex",style:"justify-content:space-between;margin-top:6px"},[
+      checkbox("Available to buy",w,"available"),
+      el("button",{class:"del",onclick:()=>{ a.works.splice(wi,1); render(); }},["Remove work"])
+    ])
+  ]);
+}
+
+function tabFront(){
+  const g=DATA;
+  return el("div",{},[
+    el("div",{class:"card"},[ el("h2",{},["Promo banner"]),
+      checkbox("Show the promo banner",g.promo,"show"),
+      field("Banner text",g.promo,"text",{area:true}) ]),
+    el("div",{class:"card"},[ el("h2",{},["Hero (top of home page)"]),
+      field("Eyebrow",g.hero,"eyebrow"),
+      el("div",{class:"row"},[ field("Heading line 1",g.hero,"headingLine1"), field("Heading emphasis",g.hero,"headingEm") ]),
+      field("Lead paragraph",g.hero,"lead",{area:true}),
+      el("div",{class:"row"},[ field("Button text",g.hero,"ctaText"), field("Button link",g.hero,"ctaLink",{hint:"e.g. #current"}) ]) ]),
+    el("div",{class:"card"},[ el("h2",{},["Feature strip"]), el("p",{class:"sub"},["Eight short words/phrases that scroll across."]),
+      el("div",{class:"row"}, g.strip.map((_,i)=> field("#"+(i+1),g.strip,i,{}) )) ]),
+    el("div",{class:"card"},[ el("h2",{},["About the gallery"]),
+      el("div",{class:"row"},[ field("Kicker",g.about,"kicker"), field("Heading",g.about,"heading") ]),
+      field("Paragraph 1",g.about,"body1",{area:true}),
+      field("Paragraph 2",g.about,"body2",{area:true}),
+      field("Paragraph 3",g.about,"body3",{area:true}),
+      el("p",{class:"mini",style:"font-weight:600;color:#444;margin-top:10px"},["Stats (3)"]),
+      ...g.about.stats.map((st,i)=> el("div",{class:"row"},[ field("Number",st,"number"), field("Label",st,"label") ]) ),
+      field("Launch note",g.about,"launchNote",{area:true}) ]),
+    el("div",{class:"card"},[ el("h2",{},["How it works"]),
+      el("div",{class:"row"},[ field("Kicker",g.howItWorks,"kicker"), field("Heading",g.howItWorks,"heading") ]),
+      ...g.howItWorks.steps.map((s,i)=> el("div",{class:"work"},[ field("Step "+(i+1)+" title",s,"title"), field("Step "+(i+1)+" text",s,"text",{area:true}) ]) ) ])
+  ]);
+}
+
+function tabInfo(){
+  const g=DATA;
+  return el("div",{},[
+    el("div",{class:"card"},[ el("h2",{},["Business details"]),
+      field("Name",g.business,"name"),
+      field("Tagline",g.business,"tagline"),
+      el("div",{class:"row"},[ field("Address line 1",g.business,"address1"), field("Address line 2",g.business,"address2") ]),
+      el("div",{class:"row"},[ field("Phone (display)",g.business,"phone"), field("Phone (link)",g.business,"phoneLink",{hint:"digits only"}) ]),
+      field("Email",g.business,"email",{type:"email"}),
+      field("Google Maps URL",g.business,"mapsUrl",{type:"url"}),
+      field("Framing shop URL",g.business,"framingShopUrl",{type:"url"}),
+      el("div",{class:"row"},[ field("Facebook",g.business,"facebook",{type:"url"}), field("Instagram",g.business,"instagram",{type:"url"}) ]) ]),
+    el("div",{class:"card"},[ el("h2",{},["Opening hours"]),
+      ...g.openingHours.map((d)=> el("div",{class:"row"},[ field("Day",d,"day"), field("Hours",d,"hours",{hint:"e.g. 9:30 – 5:30 or Closed"}) ]) ) ]),
+    el("div",{class:"card"},[ el("h2",{},["Artist enquiries section"]),
+      el("div",{class:"row"},[ field("Kicker",g.rentTheGallery,"kicker"), field("Heading",g.rentTheGallery,"heading") ]),
+      field("Body",g.rentTheGallery,"body",{area:true}),
+      el("p",{class:"mini",style:"font-weight:600;color:#444"},["Bullet points (5)"]),
+      ...g.rentTheGallery.points.map((_,i)=> field("Point "+(i+1),g.rentTheGallery.points,i,{}) ),
+      el("div",{class:"row"},[ field("Form heading",g.rentTheGallery,"formHeading"), field("Button text",g.rentTheGallery,"buttonText") ]),
+      field("Success message",g.rentTheGallery,"successMessage",{area:true}) ])
+  ]);
+}
+
+function tabPay(){
+  const s=DATA.stripe;
+  return el("div",{},[
+    el("div",{class:"card"},[
+      el("h2",{},["Payments (Stripe)"]),
+      el("p",{class:"sub"},["These settings round-trip with your content. Note: turning on real payments needs the separate Stripe step (the server-side secret key + checkout) — editing this alone does not take live payments yet."]),
+      field("Publishable key",s,"publishableKey",{hint:"starts pk_test_ or pk_live_"}),
+      checkbox("Test mode",s,"testMode"),
+      el("div",{class:"row"},[ field("Currency",s,"currency",{hint:"gbp"}) ]),
+      field("Collection note",s,"collectNote",{area:true,hint:"shown to buyers about collecting in person"}),
+      el("div",{class:"warnbox"},["Never paste a key that starts with ",el("code",{},["sk_"])," here — that is a secret server key and must only live on the server, never in a file that ships to browsers."])
+    ])
+  ]);
+}
+
+/* ---------- validation ---------- */
+function validate(){
+  const errors=[], warns=[];
+  const ids={};
+  let current=0;
+  DATA.artists.forEach((a,i)=>{
+    const who=a.name||("Artist #"+(i+1));
+    if(!a.name) warns.push(who+": no name");
+    if(!a.id) errors.push(who+": missing id");
+    if(ids[a.id]) errors.push("Duplicate artist id: "+a.id);
+    ids[a.id]=1;
+    if(a.status==="current") current++;
+    if(!a.portrait) warns.push(who+": no portrait photo");
+    if(!a.works.length) warns.push(who+": no works added");
+    a.works.forEach((w,wi)=>{
+      const wl=who+" · work "+(wi+1);
+      if(!w.title) warns.push(wl+": no title");
+      if(!(w.price>0)) warns.push(wl+": price is 0");
+      if(!w.src) warns.push(wl+": no image");
+      if(typeof w.price!=="number"||isNaN(w.price)) errors.push(wl+": price is not a number");
+    });
+  });
+  if(current>1) warns.push(current+' artists are set to "current" — usually only one show is current.');
+  return {errors,warns};
+}
+
+/* ---------- export ---------- */
+function buildContentJs(){
+  return "window.GALLERY = " + JSON.stringify(DATA, null, 2) + ";\n";
+}
+function dataURLtoBlob(d){
+  const [meta,b64]=d.split(","); const mime=(meta.match(/:(.*?);/)||[])[1]||"image/jpeg";
+  const bin=atob(b64); const u=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+  return new Blob([u],{type:mime});
+}
+function download(filename, blob){
+  const a=el("a",{href:URL.createObjectURL(blob),download:filename});
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500);
+}
+let lastSaved=null, saving=false;
+function tabPublish(){
+  const {errors,warns}=validate();
+  const imgs=Object.keys(newImages);
+  const wrap=el("div",{});
+  wrap.appendChild(el("div",{class:"card"},[
+    el("h2",{},["Save & publish"]),
+    el("p",{class:"sub"},["Saving writes your changes straight to the live site. New images upload automatically — no files to move."]),
+    (errors.length? el("div",{class:"warnbox"},[ el("b",{},["Fix these before saving:"]), el("ul",{}, errors.map(e=>el("li",{},[e]))) ]) : null),
+    (warns.length? el("div",{class:"warnbox"},[ el("b",{},["Worth checking ("+warns.length+"):"]), el("ul",{}, warns.slice(0,12).map(e=>el("li",{},[e]))), (warns.length>12? el("p",{class:"mini"},["…and "+(warns.length-12)+" more"]) : null) ]) : el("div",{class:"okbox"},["Everything looks complete. ✓"])),
+    el("p",{class:"mini"},[imgs.length+" new image(s) to upload · "+DATA.artists.length+" artists"+(lastSaved?" · last saved "+lastSaved:"")]),
+    el("div",{class:"flex",style:"margin-top:10px"},[
+      el("button",{class:"toolbtn primary",onclick:doSave},[saving?"Saving…":"💾 Save to site now"]),
+      el("button",{class:"toolbtn",onclick:()=>download("content-backup.js",new Blob([buildContentJs()],{type:"text/javascript"}))},["⬇ Download backup"])
+    ])
+  ]));
+  wrap.appendChild(el("div",{class:"card"},[
+    el("h2",{},["After you save"]),
+    el("p",{class:"sub"},["Your changes go live immediately. Open the site in another tab and refresh to see them. The ‘Download backup’ button saves a copy of your content to your device, just in case."])
+  ]));
+  return wrap;
+}
+/* upload newly-added images to the site, swapping temp paths for stored ones */
+async function uploadNewImages(){
+  for(const oldPath of Object.keys(newImages)){
+    const baseName=oldPath.replace(/^images\//,"").replace(/\.[a-z0-9]+$/i,"");
+    const res=await fetch("/api/image",{method:"POST",headers:{"content-type":"application/json"},
+      body:JSON.stringify({dataURL:newImages[oldPath],baseName})});
+    if(res.status===401) throw new Error("auth");
+    const j=await res.json().catch(()=>({}));
+    if(!res.ok||!j.path) throw new Error(j.error||"image upload failed");
+    DATA.artists.forEach(a=>{
+      if(a.portrait===oldPath) a.portrait=j.path;
+      a.works.forEach(w=>{ if(w.src===oldPath) w.src=j.path; });
+    });
+    delete newImages[oldPath];
+  }
+}
+async function doSave(){
+  if(saving) return;
+  const {errors}=validate();
+  if(errors.length){ activeTab="publish"; render(); alert("Please fix these before saving:\n\n• "+errors.slice(0,8).join("\n• ")); return; }
+  saving=true; setStatus("Saving…"); if(activeTab==="publish") render();
+  try{
+    await uploadNewImages();
+    const res=await fetch("/api/content",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(DATA)});
+    if(res.status===401){ throw new Error("auth"); }
+    const j=await res.json().catch(()=>({}));
+    if(!res.ok||!j.ok) throw new Error(j.error||"save failed");
+    lastSaved=new Date().toLocaleTimeString();
+    try{ localStorage.removeItem(LSKEY); }catch(e){}
+    setStatus("Saved to site ✓",true);
+  }catch(err){
+    if(String(err.message)==="auth"){ showLogin("Your session expired — please log in again."); }
+    else { setStatus("Save failed"); alert("Could not save: "+err.message+"\n\nYour work is still on screen — try again in a moment."); }
+  }finally{ saving=false; if(activeTab==="publish") render(); }
+}
+
+/* ---------- shell ---------- */
+const TABS=[["artists","Artists & works",tabArtists],["front","Front page",tabFront],["info","Gallery info",tabInfo],["pay","Payments",tabPay],["publish","Save & publish",tabPublish]];
+function renderTabs(){
+  const nav=document.getElementById("tabs"); nav.innerHTML="";
+  TABS.forEach(([id,label])=>{
+    nav.appendChild(el("button",{class:activeTab===id?"active":"",onclick:()=>{ activeTab=id; render(); window.scrollTo(0,0); }},[label]));
+  });
+}
+function render(){
+  renderTabs();
+  const main=document.getElementById("main"); main.innerHTML="";
+  const t=TABS.find(x=>x[0]===activeTab)||TABS[0];
+  main.appendChild(t[2]());
+}
+
+/* ---------- auth ---------- */
+function showLogin(msg){
+  document.body.classList.add("locked");
+  document.getElementById("login").style.display="flex";
+  document.getElementById("loginerr").textContent=msg||"";
+  document.getElementById("btnLogout").style.display="none";
+  setTimeout(()=>document.getElementById("pw").focus(),50);
+}
+function hideLogin(){
+  document.body.classList.remove("locked");
+  document.getElementById("login").style.display="none";
+  document.getElementById("btnLogout").style.display="";
+}
+async function checkSession(){
+  try{ const r=await fetch("/api/session"); const j=await r.json(); return !!j.authed; }catch(e){ return false; }
+}
+document.getElementById("loginform").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const pw=document.getElementById("pw").value;
+  document.getElementById("loginerr").textContent="Checking…";
+  try{
+    const r=await fetch("/api/login",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({password:pw})});
+    if(r.ok){ document.getElementById("pw").value=""; hideLogin(); boot(); }
+    else { document.getElementById("loginerr").textContent="Wrong password. Try again."; }
+  }catch(err){ document.getElementById("loginerr").textContent="Network error — try again."; }
+});
+document.getElementById("btnLogout").addEventListener("click",async()=>{
+  await fetch("/api/logout",{method:"POST"}); showLogin("Logged out.");
+});
+
+/* ---------- boot ---------- */
+let booted=false;
+async function boot(){
+  if(booted){ render(); return; }
+  booted=true;
+  renderTabs();
+  let draft=null;
+  try{ const raw=localStorage.getItem(LSKEY); if(raw) draft=JSON.parse(raw); }catch(e){}
+  if(draft && draft.data){
+    const when=new Date(draft.t).toLocaleString();
+    if(confirm("You have an unsaved draft from "+when+".\n\nOK = keep editing that draft\nCancel = discard it and load from the site")){
+      DATA=normalise(draft.data); activeTab="artists"; render(); setStatus("Draft restored",true); return;
+    } else { try{ localStorage.removeItem(LSKEY); }catch(e){} }
+  }
+  const live=await loadLive();
+  if(live){ DATA=normalise(live); setStatus("Loaded from site",true); }
+  else { DATA=normalise(seed()); setStatus("No content yet — starting from a blank template."); }
+  render();
+}
+
+/* header buttons */
+document.getElementById("btnLoad").addEventListener("click",async()=>{
+  if(!confirm("Reload from the site? This replaces what's on screen (unsaved changes and any added images will be lost)."))return;
+  const live=await loadLive();
+  if(live){ DATA=normalise(live); newImages={}; render(); setStatus("Reloaded from site",true); }
+  else setStatus("Could not load from site");
+});
+document.getElementById("btnImport").addEventListener("click",()=>document.getElementById("fileImport").click());
+document.getElementById("fileImport").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const fr=new FileReader();
+  fr.onload=()=>{ try{ const g=parseContentJs(fr.result); if(!g) throw 0; DATA=normalise(g); newImages={}; activeTab="artists"; render(); setStatus("Imported "+f.name,true); }
+    catch(err){ alert("Could not read that file as a content.js. Make sure it's the gallery's content.js."); } };
+  fr.readAsText(f); e.target.value="";
+});
+document.getElementById("btnSave").addEventListener("click",doSave);
+
+/* ---------- start ---------- */
+(async()=>{
+  if(await checkSession()){ hideLogin(); boot(); }
+  else { showLogin(); }
+})();
+</script>
+</body>
+</html>

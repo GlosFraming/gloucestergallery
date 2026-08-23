@@ -1,0 +1,27 @@
+# ============================================================
+# Gloucester Gallery — Worker config (Step 1)
+# Deploy this as a NEW, separate Worker for testing, so your
+# live static site stays untouched until you're happy.
+# ============================================================
+
+name = "gloucestergallery"
+main = "worker.js"
+compatibility_date = "2025-06-01"
+
+# Serve the existing repo files as the static site.
+# run_worker_first = true means every request goes through worker.js first
+# (needed so /content.js can come from live storage, and /api/* works).
+# The worker passes normal page requests straight through to these assets.
+[assets]
+directory = "./"
+binding = "ASSETS"
+run_worker_first = true
+
+# Live content + login sessions + uploaded images live here.
+[[kv_namespaces]]
+binding = "GG_KV"
+id = "26b6b62ee05e4200a04f385b6141dd04"
+
+# ADMIN_PASSWORD is a SECRET — never put it in this file.
+# Set it with:  wrangler secret put ADMIN_PASSWORD
+# (or in the dashboard: Settings → Variables and Secrets → Add, "Encrypt")
