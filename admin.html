@@ -344,6 +344,13 @@ function artistCard(a,i){
     imagePicker(a,"portrait","portrait","artist-"+slug(a.id||a.name)),
     el("p",{class:"mini",style:"margin-top:14px;font-weight:600;color:#444"},["Works"]),
     works,
+    el("div",{class:"work",style:"background:#f2f7f4;border-color:#cfe7d8;border-style:solid"},[
+      el("p",{class:"mini",style:"font-weight:600;color:#2e7d4f;margin:0 0 4px"},["Artist self-editing link"]),
+      el("p",{class:"mini",style:"margin:0 0 8px"},["Give this artist a private link to edit just this page. Save a new artist first, then create the link."]),
+      el("div",{id:"artlink-"+a.id,class:"flex"},[
+        el("button",{class:"toolbtn",onclick:()=>getArtistLink(a.id)},["🔗 Get / show editing link"])
+      ])
+    ]),
     el("div",{class:"flex end",style:"margin-top:12px"},[
       el("button",{class:"del",onclick:()=>{ if(confirm("Remove "+(a.name||"this artist")+" and all their works?")){ DATA.artists.splice(i,1); openArtist=-1; render(); } }},["Delete artist"])
     ])
@@ -528,7 +535,71 @@ async function doSave(){
 }
 
 /* ---------- shell ---------- */
-const TABS=[["artists","Artists & works",tabArtists],["front","Front page",tabFront],["info","Gallery info",tabInfo],["pay","Payments",tabPay],["publish","Save & publish",tabPublish]];
+const TABS=[["artists","Artists & works",tabArtists],["front","Front page",tabFront],["info","Gallery info",tabInfo],["pay","Payments",tabPay],["backups","Backups",tabBackups],["publish","Save & publish",tabPublish]];
+
+/* ---------- artist editing links ---------- */
+async function getArtistLink(id, regenerate){
+  const box=document.getElementById("artlink-"+id); if(!box) return;
+  box.innerHTML=""; box.appendChild(el("span",{class:"mini"},["Working…"]));
+  try{
+    const r=await fetch("/api/artist-link",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({artistId:id,regenerate:!!regenerate})});
+    if(r.status===401){ showLogin("Please log in again."); return; }
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok||!j.path){ box.innerHTML=""; box.appendChild(el("span",{class:"mini",style:"color:var(--warn)"},[j.error||"Could not create link. Save the artist first, then try again."])); return; }
+    const url=location.origin+j.path;
+    box.innerHTML="";
+    const inp=el("input",{type:"text",readonly:"readonly",value:url,style:"flex:2;min-width:220px"});
+    box.appendChild(inp);
+    box.appendChild(el("button",{class:"toolbtn",onclick:()=>{ inp.select(); navigator.clipboard&&navigator.clipboard.writeText(url); setStatus("Link copied",true); }},["📋 Copy"]));
+    box.appendChild(el("button",{class:"toolbtn",onclick:()=>{ if(confirm("Make a brand-new link? The old one will stop working immediately.")) getArtistLink(id,true); }},["↻ New link"]));
+    box.appendChild(el("button",{class:"del",onclick:()=>revokeArtistLink(id)},["Revoke"]));
+    box.appendChild(el("p",{class:"mini",style:"width:100%;margin:6px 0 0"},["Send this link to the artist. Anyone with it can edit this page, so keep it private. ‘New link’ replaces it; ‘Revoke’ turns off editing."]));
+  }catch(e){ box.innerHTML=""; box.appendChild(el("span",{class:"mini",style:"color:var(--warn)"},["Network error — try again."])); }
+}
+async function revokeArtistLink(id){
+  if(!confirm("Turn off this artist's editing link? They won't be able to edit until you send a new one."))return;
+  await fetch("/api/artist-revoke",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({artistId:id})});
+  const box=document.getElementById("artlink-"+id);
+  if(box){ box.innerHTML=""; box.appendChild(el("button",{class:"toolbtn",onclick:()=>getArtistLink(id)},["🔗 Get / show editing link"])); }
+  setStatus("Link turned off",true);
+}
+
+/* ---------- backups ---------- */
+function tabBackups(){
+  const wrap=el("div",{});
+  wrap.appendChild(el("div",{class:"card"},[
+    el("h2",{},["Backups"]),
+    el("p",{class:"sub"},["Every save — yours or an artist's — is backed up automatically (last 30). If something looks wrong, restore an earlier version. Restoring also backs up the current state first, so it's always safe."]),
+    el("div",{id:"verlist"},[el("p",{class:"mini"},["Loading…"])])
+  ]));
+  loadVersions();
+  return wrap;
+}
+async function loadVersions(){
+  const box=document.getElementById("verlist"); if(!box) return;
+  try{
+    const r=await fetch("/api/versions");
+    if(r.status===401){ showLogin("Please log in again."); return; }
+    const j=await r.json().catch(()=>({}));
+    const vs=j.versions||[];
+    box.innerHTML="";
+    if(!vs.length){ box.appendChild(el("p",{class:"mini"},["No backups yet — they appear after the next save."])); return; }
+    box.appendChild(el("ul",{class:"filelist"}, vs.map(v=>{
+      const when=new Date(v.ts).toLocaleString();
+      const who=v.who&&v.who.indexOf("artist:")===0?("artist: "+v.who.slice(7)):(v.who==="owner"?"you":(v.who||"—"));
+      return el("li",{},[ el("span",{},[when+"  ",el("span",{class:"tag"},[who])]), el("button",{class:"toolbtn",onclick:()=>doRestore(v.ts,when)},["Restore this"]) ]);
+    })));
+  }catch(e){ box.innerHTML=""; box.appendChild(el("p",{class:"mini",style:"color:var(--warn)"},["Could not load backups."])); }
+}
+async function doRestore(ts,when){
+  if(!confirm("Restore the version from "+when+"?\n\nThis replaces the current live content. A backup of the current state is kept first."))return;
+  const r=await fetch("/api/restore",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({ts})});
+  if(r.status===401){ showLogin("Please log in again."); return; }
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok||!j.ok){ alert("Restore failed: "+(j.error||"try again")); return; }
+  const live=await loadLive(); if(live){ DATA=normalise(live); newImages={}; }
+  activeTab="artists"; render(); setStatus("Restored ✓",true);
+}
 function renderTabs(){
   const nav=document.getElementById("tabs"); nav.innerHTML="";
   TABS.forEach(([id,label])=>{
